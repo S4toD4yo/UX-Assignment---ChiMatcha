@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChiMatcha">
         <activity
+            android:name=".MenuDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".BranchesActivity"
             android:exported="false" />
         <activity
