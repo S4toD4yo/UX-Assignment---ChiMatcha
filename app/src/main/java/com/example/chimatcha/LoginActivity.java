@@ -24,17 +24,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
-public class MainActivity extends AppCompatActivity {
-    private EditText etUsername;
+public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
 
-    private TextView txtSignIn;
-
     private ImageView btnTogglePassword;
 
-    private MaterialButton btnSignUp;
+    private MaterialButton btnSignIn;
+
+    private MaterialCardView btnBack;
+
+    private TextView txtForgotPassword;
+    private TextView txtSignUp;
 
     private boolean isPasswordVisible = false;
 
@@ -43,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_login);
 
         ViewCompat.setOnApplyWindowInsetsListener(
-                findViewById(R.id.register),
+                findViewById(R.id.login),
                 (v, insets) -> {
 
                     Insets systemBars =
@@ -67,25 +70,55 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
 
+        setupBackButton();
         setupPasswordToggle();
         setupButtonAnimation();
-        setupSignInLink();
-        setupSignUpButton();
+        setupForgotPassword();
+        setupSignUpLink();
+        setupLoginButton();
     }
 
     private void initializeViews() {
 
-        etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-
-        txtSignIn = findViewById(R.id.txtSignIn);
 
         btnTogglePassword =
                 findViewById(R.id.btnTogglePassword);
 
-        btnSignUp =
-                findViewById(R.id.btnSignUp);
+        btnSignIn =
+                findViewById(R.id.btnSignIn);
+
+        btnBack =
+                findViewById(R.id.btnBack);
+
+        txtForgotPassword =
+                findViewById(R.id.txtForgotPassword);
+
+        txtSignUp =
+                findViewById(R.id.txtSignUp);
+    }
+
+    private void setupBackButton() {
+
+        btnBack.setOnClickListener(v -> finish());
+
+        btnBack.setOnTouchListener((v, event) -> {
+
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+                    v.setAlpha(0.5f);
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setAlpha(1f);
+                    break;
+            }
+
+            return false;
+        });
     }
 
     private void setupPasswordToggle() {
@@ -127,18 +160,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupButtonAnimation() {
 
-        btnSignUp.setOnTouchListener((v, event) -> {
+        btnSignIn.setOnTouchListener((v, event) -> {
 
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
-
                     v.setAlpha(0.5f);
                     break;
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-
                     v.setAlpha(1f);
                     break;
             }
@@ -147,16 +178,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSignInLink() {
+    private void setupForgotPassword() {
+
+        txtForgotPassword.setOnClickListener(v -> {
+
+            // Nanti bisa diarahkan ke ForgotPasswordActivity
+        });
+    }
+
+    private void setupSignUpLink() {
 
         String text =
-                "Already have an account? Sign In now";
+                "Don't have an account? Sign Up now";
 
         SpannableString spannable =
                 new SpannableString(text);
 
         int start =
-                text.indexOf("Sign In");
+                text.indexOf("Sign Up");
 
         int end =
                 text.indexOf(" now");
@@ -169,11 +208,12 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent =
                                 new Intent(
-                                        MainActivity.this,
-                                        LoginActivity.class
+                                        LoginActivity.this,
+                                        MainActivity.class
                                 );
 
                         startActivity(intent);
+                        finish();
                     }
 
                     @Override
@@ -216,35 +256,22 @@ public class MainActivity extends AppCompatActivity {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         );
 
-        txtSignIn.setText(spannable);
+        txtSignUp.setText(spannable);
 
-        txtSignIn.setMovementMethod(
+        txtSignUp.setMovementMethod(
                 LinkMovementMethod.getInstance()
         );
     }
 
-    private void setupSignUpButton() {
+    private void setupLoginButton() {
 
-        btnSignUp.setOnClickListener(v -> {
-
-            String username =
-                    etUsername.getText().toString().trim();
+        btnSignIn.setOnClickListener(v -> {
 
             String email =
                     etEmail.getText().toString().trim();
 
             String password =
                     etPassword.getText().toString().trim();
-
-            if (username.isEmpty()) {
-
-                etUsername.setError(
-                        "Username is required"
-                );
-
-                etUsername.requestFocus();
-                return;
-            }
 
             if (email.isEmpty()) {
 
@@ -268,14 +295,9 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent =
                     new Intent(
-                            MainActivity.this,
+                            LoginActivity.this,
                             HomepageActivity.class
                     );
-
-            intent.putExtra(
-                    "USERNAME",
-                    username
-            );
 
             startActivity(intent);
             finish();
