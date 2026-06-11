@@ -348,7 +348,8 @@ public class HomepageActivity extends AppCompatActivity {
 
         btnOrder.setOnClickListener(v -> {
 
-            // MenuActivity
+            Intent intent = new Intent(HomepageActivity.this, MenuActivity.class);
+            startActivity(intent);
         });
     }
 
